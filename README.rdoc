@@ -1,0 +1,5 @@
+== Pjax implementation
+
+Usage:
+
+  $.pjax('#container');
