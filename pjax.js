@@ -56,7 +56,7 @@
       container.html(content);
       setTitle(container);
     } else {
-      container.html('<div class="content loading">loading...</div>');
+      $(document).trigger('pjax:beforeSend');
     }
 
     var xhr = Pjax.xhr;
