@@ -76,6 +76,7 @@
       success: function(data) {
         container.html(data);
         setTitle(container);
+        $(document).trigger('pjax:page:change');
       }
     });
   }
