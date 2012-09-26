@@ -11,7 +11,7 @@
     // Initialize state for initial page load
     window.history.replaceState({ pjax: true }, null, document.location.href);
 
-    var target = 'a:not([data-remote]):not([data-skip-pjax])';
+    var target = 'a:not([data-remote]):not([data-no-pjax])';
     $(document).on('click', target, $.proxy(handleClick, this));
     $(window).on('popstate', $.proxy(handlePopState, this));
   }
