@@ -2,9 +2,7 @@
   var cache = {};
   var cacheEntries = [];
 
-  var Pjax = function(element) {
-    this.$element = $(element);
-
+  var Pjax = function() {
     if ($.inArray('state', $.event.props) < 0)
       $.event.props.push('state');
 
@@ -37,23 +35,23 @@
     if (link.href === location.href + '#')
       return;
 
-    cachePush(location.href, this.$element.html());
+    cachePush(location.href, $('html').html());
     window.history.pushState({ pjax: true }, null, link.href);
-    handleRemote(link.href, this.$element);
+    handleRemote(link.href);
 
     e.preventDefault();
   }
 
   function handlePopState(e) {
     if (e.state && e.state.pjax) {
-      handleRemote(document.location.href, this.$element);
+      handleRemote(document.location.href);
     }
   }
 
-  function handleRemote(href, container) {
+  function handleRemote(href) {
     var content = cachePop(href)
     if (content) {
-      replaceDocument(container, content)
+      replaceDocument(content)
     } else {
       $(document).trigger('pjax:beforeSend');
     }
@@ -69,25 +67,44 @@
       dataType: 'html',
       type: 'GET',
       data: { _pjax: true },
-      beforeSend: function(xhr) {
-        xhr.setRequestHeader('X-PJAX', true);
-      },
       success: function(data) {
-        replaceDocument(container, data)
+        replaceDocument(data)
       }
     });
   }
 
-  function replaceDocument(container, data) {
-    container.html(data);
-    setTitle(container);
+  function replaceDocument(data) {
+    var doc = createDocument(data);
+
+    $('body').replaceWith(doc.body);
+    document.title = doc.title;
     $(document).trigger('pjax:page:change');
   }
 
-  function setTitle(container) {
-    var title = container.find('[data-title]').data('title');
-    if (title) document.title = title;
-  }
+  var createDocument = (function() {
+    var createDocUsingParser = function(html) {
+      var doc = (new DOMParser).parseFromString(html, 'text/html');
+      return doc;
+    };
+
+    var createDocUsingWrite = function(html) {
+      var doc = document.implementation.createHTMLDocument("");
+      doc.open("replace");
+      doc.write(html);
+      doc.close;
+      return doc;
+    };
+
+    if (window.DOMParser)
+      var testDoc = createDocUsingParser("<html><body><p>test");
+
+    var _ref;
+    if ((testDoc != null ? (_ref = testDoc.body) != null ? _ref.childNodes.length : void 0 : void 0) === 1) {
+      return createDocUsingParser;
+    } else {
+      return createDocUsingWrite;
+    }
+  })();
 
   function cachePush(id, content) {
     var idx = cacheEntries.indexOf(id);
@@ -112,10 +129,8 @@
     return content;
   }
 
-  $.pjax = function(container) {
-    if (window.history && window.history.pushState && window.history.replaceState)
-      window.pjax || (window.pjax = new Pjax(container));
-  }
+  $.pjax = { maxCacheLength: 30 };
 
-  $.pjax.maxCacheLength = 30;
+  if (window.history && window.history.pushState && window.history.replaceState)
+    new Pjax;
 })(window.jQuery);
