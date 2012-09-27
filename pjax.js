@@ -53,8 +53,7 @@
   function handleRemote(href, container) {
     var content = cachePop(href)
     if (content) {
-      container.html(content);
-      setTitle(container);
+      replaceDocument(container, content)
     } else {
       $(document).trigger('pjax:beforeSend');
     }
@@ -74,11 +73,15 @@
         xhr.setRequestHeader('X-PJAX', true);
       },
       success: function(data) {
-        container.html(data);
-        setTitle(container);
-        $(document).trigger('pjax:page:change');
+        replaceDocument(container, data)
       }
     });
+  }
+
+  function replaceDocument(container, data) {
+    container.html(data);
+    setTitle(container);
+    $(document).trigger('pjax:page:change');
   }
 
   function setTitle(container) {
