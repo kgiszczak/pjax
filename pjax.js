@@ -31,7 +31,7 @@
 
     // Middle click, cmd click, and ctrl click should open
     // links in a new tab as normal.
-    if (e.which > 1 || e.metaKey || e.ctrlKey)
+    if (e.which > 1 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey)
       return;
 
     // Ignore cross origin links
