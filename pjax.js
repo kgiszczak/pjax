@@ -9,13 +9,21 @@
     // Initialize state for initial page load
     window.history.replaceState({ pjax: true }, null, document.location.href);
 
-    var target = 'a:not([data-remote]):not([data-no-pjax])';
-    $(document).on('click', target, $.proxy(handleClick, this));
-    $(window).on('popstate', $.proxy(handlePopState, this));
+    document.addEventListener('click', installClickHandlers, true);
+    $(window).on('popstate', handlePopState);
+  }
+
+  function installClickHandlers() {
+    $(document).off('click', handleClick);
+    $(document).on('click', 'a', handleClick);
   }
 
   function handleClick(e) {
     var link = e.currentTarget;
+
+    // Ignore if previous handler disabled default action
+    if (e.isDefaultPrevented())
+      return;
 
     // Middle click, cmd click, and ctrl click should open
     // links in a new tab as normal.
