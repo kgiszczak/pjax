@@ -78,7 +78,6 @@
       url: href,
       dataType: 'html',
       type: 'GET',
-      data: { _pjax: true },
       success: function(data) {
         replaceDocument(data)
       }
