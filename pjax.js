@@ -25,6 +25,10 @@
     if (e.isDefaultPrevented())
       return;
 
+    // Ignore no pjax links
+    if ($(link).data('no-pjax'))
+      return;
+
     // Middle click, cmd click, and ctrl click should open
     // links in a new tab as normal.
     if (e.which > 1 || e.metaKey || e.ctrlKey)
@@ -39,7 +43,7 @@
         location.href.replace(location.hash, ''))
       return;
 
-      // Ignore empty anchor "foo.html#"
+    // Ignore empty anchor "foo.html#"
     if (link.href === location.href + '#')
       return;
 
