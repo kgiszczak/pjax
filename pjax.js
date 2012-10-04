@@ -9,6 +9,7 @@
     // Initialize state for initial page load
     window.history.replaceState({ pjax: true }, null, document.location.href);
 
+    $(function() { cachePush(location.href, $('html').html()); });
     document.addEventListener('click', installClickHandlers, true);
     $(window).on('popstate', handlePopState);
   }
@@ -48,7 +49,6 @@
       return;
 
     window.scrollTo(0, 0);
-    cachePush(location.href, $('html').html());
     window.history.pushState({ pjax: true }, null, link.href);
     handleRemote(link.href);
 
@@ -81,6 +81,7 @@
       type: 'GET',
       success: function(data) {
         replaceDocument(data)
+        cachePush(location.href, $('html').html());
       }
     });
   }
