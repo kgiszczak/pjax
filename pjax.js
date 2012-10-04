@@ -47,6 +47,7 @@
     if (link.href === location.href + '#')
       return;
 
+    window.scrollTo(0, 0);
     cachePush(location.href, $('html').html());
     window.history.pushState({ pjax: true }, null, link.href);
     handleRemote(link.href);
