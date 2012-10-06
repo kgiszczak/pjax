@@ -49,8 +49,8 @@
       return;
 
     window.scrollTo(0, 0);
-    window.history.pushState({ pjax: true }, null, link.href);
     handleRemote(link.href);
+    window.history.pushState({ pjax: true }, null, link.href);
 
     e.preventDefault();
   }
