@@ -66,7 +66,7 @@
     if (content) {
       replaceDocument(content)
     } else {
-      $(document).trigger('pjax:beforeSend');
+      $(document).trigger('pjax:page:fetch');
     }
 
     var xhr = Pjax.xhr;
@@ -82,6 +82,7 @@
       success: function(data) {
         replaceDocument(data)
         cachePush(location.href, $('html').html());
+        $(document).trigger('pjax:page:load')
       }
     });
   }
