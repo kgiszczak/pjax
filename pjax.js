@@ -9,7 +9,7 @@
     // Initialize state for initial page load
     window.history.replaceState({ pjax: true }, null, document.location.href);
 
-    $(function() { cachePush(location.href, $('html').html()); });
+    $(function() { cachePush(location.href, $('html')[0].outerHTML); });
     document.addEventListener('click', installClickHandlers, true);
     $(window).on('popstate', handlePopState);
   }
@@ -81,7 +81,7 @@
       type: 'GET',
       success: function(data) {
         replaceDocument(data)
-        cachePush(location.href, $('html').html());
+        cachePush(location.href, $('html')[0].outerHTML);
         $(document).trigger('pjax:page:load')
       }
     });
@@ -95,30 +95,11 @@
     $(document).trigger('pjax:page:change');
   }
 
-  var createDocument = (function() {
-    var createDocUsingParser = function(html) {
-      var doc = (new DOMParser).parseFromString(html, 'text/html');
-      return doc;
-    };
-
-    var createDocUsingWrite = function(html) {
-      var doc = document.implementation.createHTMLDocument("");
-      doc.open("replace");
-      doc.write(html);
-      doc.close;
-      return doc;
-    };
-
-    if (window.DOMParser)
-      var testDoc = createDocUsingParser("<html><body><p>test");
-
-    var _ref;
-    if ((testDoc != null ? (_ref = testDoc.body) != null ? _ref.childNodes.length : void 0 : void 0) === 1) {
-      return createDocUsingParser;
-    } else {
-      return createDocUsingWrite;
-    }
-  })();
+  function createDocument(html) {
+    var doc = document.implementation.createHTMLDocument('');
+    doc.documentElement.innerHTML = html;
+    return doc;
+  }
 
   function cachePush(id, content) {
     var idx = cacheEntries.indexOf(id);
